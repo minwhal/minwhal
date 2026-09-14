@@ -1,8 +1,10 @@
 package auth
 
-import database "github.com/orca-infrastructures/orca/internal/database/generated"
+import (
+	"github.com/orca-infrastructures/orca/internal/database"
+)
 
-func createRefreshToken(dbUser database.User) RefreshToken {
+func (a *AuthService) createRefreshToken(dbUser database.User) RefreshToken {
 
 	return RefreshToken{}
 }

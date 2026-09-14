@@ -25,10 +25,10 @@ func writeJson(w http.ResponseWriter, status int, payload any) {
 	json.NewEncoder(w).Encode(payload)
 }
 
-func WriteError(w http.ResponseWriter, status int, msg string, code string) {
-	writeJson(w, status, ErrorResponse{Error: msg, Code: code})
-}
-
 func WriteJson(w http.ResponseWriter, status int, payload any) {
 	writeJson(w, status, payload)
+}
+
+func ResponseWithError(w http.ResponseWriter, code int, err error) {
+	writeJson(w, code, err)
 }

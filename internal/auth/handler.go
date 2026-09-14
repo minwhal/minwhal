@@ -10,6 +10,10 @@ type AuthHandler struct {
 	authService *AuthService
 }
 
+func NewAuthHandler(authService *AuthService) *AuthHandler {
+	return &AuthHandler{authService: authService}
+}
+
 type LoginRequest struct {
 	Email    string
 	Password string
@@ -23,7 +27,8 @@ func (a *AuthHandler) HandleLogin(w http.ResponseWriter, r *http.Request) {
 	}
 	token, err := a.authService.Login(r.Context(), loginRequest)
 	if err != nil {
-		httpx.WriteError(w)
+		httpx.ResponseWithError(w, http.StatusNotFound, err)
+		return
 	}
 	httpx.WriteJson(w, http.StatusOK, token)
 }

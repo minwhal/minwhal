@@ -1,11 +1,13 @@
 package auth
 
+import "time"
+
 type AccessToken struct {
-	TokenString string
-	ExpiresAt   string
+	TokenString string    `json:"token"`
+	ExpiresAt   time.Time `json:"expires_at"`
 }
 
 type RefreshToken struct {
-	ExpirestAt  string
-	TokenString string
+	ExpiresAt   time.Time `json:"expires_at"`
+	TokenString string    `json:"token"`
 }

@@ -10,11 +10,15 @@ type AuthService struct {
 	q *database.Queries
 }
 
-func (as *AuthService) Login(ctx context.Context, loginRequest LoginRequest) (RefreshToken, error) {
+func NewAuthService(q *database.Queries) *AuthService {
+	return &AuthService{q: q}
+}
+
+func (as *AuthService) Login(ctx context.Context, loginRequest *LoginRequest) (RefreshToken, error) {
 	dbUser, err := as.q.GetUserByEmail(ctx, loginRequest.Email)
 	if err != nil {
 		return RefreshToken{}, database.WrapNotFound(err)
 	}
-	refreshToken := createRefreshToken(dbUser)
+	refreshToken := as.createRefreshToken(dbUser)
 	return refreshToken, nil
 }

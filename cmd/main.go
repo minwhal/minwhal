@@ -1,4 +1,4 @@
-package cmd
+package main
 
 import (
 	"database/sql"
@@ -24,13 +24,17 @@ func main() {
 	if err != nil {
 		log.Fatalf("Database connection error: %v", err)
 	}
+	if err := conn.Ping(); err != nil {
+		log.Fatalf("Database unreachable: %v", err)
+	}
 	defer conn.Close()
 	queries := database.New(conn)
 
-	AuthHandler := auth.AuthHandler{&auth.AuthService{queries}}
+	authService := auth.NewAuthService(queries)
+	authHandler := auth.NewAuthHandler(authService)
 
 	mux := http.NewServeMux()
-	mux.HandleFunc("/login", AuthHandler.HandleLogin)
+	mux.HandleFunc("/login", authHandler.HandleLogin)
 
-	log.Fatal(http.ListenAndServe(domainEnv+portEnv, mux))
+	log.Fatal(http.ListenAndServe(domainEnv+":"+portEnv, mux))
 }
