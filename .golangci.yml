@@ -1,0 +1,96 @@
+run:
+  timeout: 5m
+  modules-download-mode: readonly
+
+linters:
+  enable:
+    - bodyclose
+    - errcheck
+    - goconst
+    - gocritic
+    - gofmt
+    - goimports
+    - gosec
+    - gosimple
+    - govet
+    - ineffassign
+    - misspell
+    - noctx
+    - prealloc
+    - revive
+    - staticcheck
+    - stylecheck
+    - typecheck
+    - unconvert
+    - unparam
+    - unused
+    - whitespace
+
+linters-settings:
+  govet:
+    enable-all: true
+    disable:
+      - fieldalignment
+
+  revive:
+    rules:
+      - name: blank-imports
+      - name: context-as-argument
+      - name: dot-imports
+      - name: error-return
+      - name: error-strings
+      - name: exported
+      - name: increment-decrement
+      - name: var-naming
+      - name: package-comments
+        disabled: true
+
+  goconst:
+    min-len: 3
+    min-occurrences: 3
+
+  gocritic:
+    enabled-tags:
+      - diagnostic
+      - style
+      - performance
+    disabled-checks:
+      - hugeParam
+
+  goimports:
+    local-prefixes: github.com/orca-infrastructures/orca
+
+  misspell:
+    locale: US
+
+  stylecheck:
+    initialisms:
+      - ID
+      - SQL
+      - URL
+      - HTTP
+      - JSON
+
+issues:
+  exclude-dirs:
+    - internal/database/schema
+    - internal/database/queries
+
+  exclude-rules:
+    # sqlc-generated code
+    - path: internal/database/(db\.go|models\.go|users\.sql\.go)
+      linters:
+        - revive
+        - govet
+        - unparam
+        - unused
+
+    # test files
+    - path: _test\.go
+      linters:
+        - gosec
+        - unparam
+        - errcheck
+
+  max-issues-per-linter: 50
+  max-same-issues: 10
