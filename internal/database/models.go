@@ -4,9 +4,12 @@
 
 package database
 
-type Token struct {
+type RefreshToken struct {
 	ID        string
 	ExpiresAt string
+	Token     string
+	UserID    string
+	CreatedAt string
 }
 
 type User struct {
