@@ -7,8 +7,8 @@ import (
 	"os"
 
 	"github.com/joho/godotenv"
-	"github.com/orca-infrastructures/orca/internal/auth"
-	"github.com/orca-infrastructures/orca/internal/database"
+	"github.com/minwhal/minwhal/internal/auth"
+	"github.com/minwhal/minwhal/internal/database"
 )
 
 func main() {

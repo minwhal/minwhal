@@ -58,7 +58,7 @@ linters-settings:
       - hugeParam
 
   goimports:
-    local-prefixes: github.com/orca-infrastructures/orca
+    local-prefixes: github.com/minwhal/minwhal
 
   misspell:
     locale: US

@@ -2,8 +2,11 @@ package auth
 
 import (
 	"context"
+	"errors"
 
-	"github.com/orca-infrastructures/orca/internal/database"
+	"github.com/minwhal/minwhal/internal/database"
+
+	"golang.org/x/crypto/bcrypt"
 )
 
 type AuthService struct {
@@ -18,6 +21,10 @@ func (as *AuthService) Login(ctx context.Context, loginRequest *LoginRequest) (R
 	dbUser, err := as.q.GetUserByEmail(ctx, loginRequest.Email)
 	if err != nil {
 		return RefreshToken{}, database.WrapNotFound(err)
+	}
+	err = bcrypt.CompareHashAndPassword([]byte(dbUser.HashedPassword), []byte(loginRequest.Password))
+	if err != nil {
+		return RefreshToken{}, errors.New("wrong password")
 	}
 	refreshToken := as.createRefreshToken(dbUser)
 	return refreshToken, nil

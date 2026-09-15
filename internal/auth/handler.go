@@ -3,7 +3,7 @@ package auth
 import (
 	"net/http"
 
-	"github.com/orca-infrastructures/orca/internal/httpx"
+	"github.com/minwhal/minwhal/internal/httpx"
 )
 
 type AuthHandler struct {
