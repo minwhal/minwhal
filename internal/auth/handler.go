@@ -18,17 +18,21 @@ type LoginRequest struct {
 	Email    string
 	Password string
 }
+type LoginResponse struct {
+	RefreshToken RefreshToken
+	AccessToken  AccessToken
+}
 
-func (a *AuthHandler) HandleLogin(w http.ResponseWriter, r *http.Request) {
+func (a *AuthHandler) HandleLogin(w http.ResponseWriter, r *http.Request) error {
 	loginRequest, err := httpx.Decode[LoginRequest](r)
 	if err != nil {
-		http.Error(w, "invalid json", http.StatusBadRequest)
-		return
+		return err
 	}
-	token, err := a.authService.Login(r.Context(), loginRequest)
+	loginResponse, err := a.authService.Login(r.Context(), loginRequest)
 	if err != nil {
-		httpx.ResponseWithError(w, http.StatusNotFound, err)
-		return
+		return err
 	}
-	httpx.WriteJson(w, http.StatusOK, token)
+
+	httpx.WriteJson(w, http.StatusOK, loginResponse)
+	return nil
 }

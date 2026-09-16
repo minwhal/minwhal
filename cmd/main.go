@@ -9,6 +9,7 @@ import (
 	"github.com/joho/godotenv"
 	"github.com/minwhal/minwhal/internal/auth"
 	"github.com/minwhal/minwhal/internal/database"
+	"github.com/minwhal/minwhal/internal/httpx"
 )
 
 func main() {
@@ -33,8 +34,8 @@ func main() {
 	authService := auth.NewAuthService(queries)
 	authHandler := auth.NewAuthHandler(authService)
 
-	mux := http.NewServeMux()
-	mux.HandleFunc("/login", authHandler.HandleLogin)
+	router := httpx.NewRouter()
+	router.Handle("/login", authHandler.HandleLogin)
 
-	log.Fatal(http.ListenAndServe(domainEnv+":"+portEnv, mux))
+	log.Fatal(http.ListenAndServe(domainEnv+":"+portEnv, router))
 }
