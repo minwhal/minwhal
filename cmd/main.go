@@ -4,22 +4,18 @@ import (
 	"database/sql"
 	"log"
 	"net/http"
-	"os"
 
-	"github.com/joho/godotenv"
+	"github.com/go-chi/chi/v5"
 	"github.com/minwhal/minwhal/internal/auth"
+	"github.com/minwhal/minwhal/internal/conf"
 	"github.com/minwhal/minwhal/internal/database"
-	"github.com/minwhal/minwhal/internal/httpx"
 )
 
 func main() {
-	err := godotenv.Load()
+	cfg, err := conf.LoadConfig()
 	if err != nil {
-		log.Fatal("Error loading .env file")
+		log.Fatalf("config load failed: %v", err)
 	}
-
-	portEnv := os.Getenv("PORT")
-	domainEnv := os.Getenv("DOMAIN")
 
 	conn, err := sql.Open("sqlite", "app.db")
 	if err != nil {
@@ -31,11 +27,11 @@ func main() {
 	defer conn.Close()
 	queries := database.New(conn)
 
-	authService := auth.NewAuthService(queries)
+	authService := auth.NewAuthService(queries, cfg.JwtSecret, cfg.JwtAccessTokenDuration, cfg.JwtRefreshTokenDuration)
 	authHandler := auth.NewAuthHandler(authService)
 
-	router := httpx.NewRouter()
-	router.Handle("/login", authHandler.HandleLogin)
+	router := chi.NewRouter()
+	router.Mount("/auth", authHandler.Routes())
 
-	log.Fatal(http.ListenAndServe(domainEnv+":"+portEnv, router))
+	log.Fatal(http.ListenAndServe(cfg.Domain+":"+cfg.Port, router))
 }
